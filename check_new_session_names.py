@@ -12,7 +12,7 @@ Fuctions:
 - email_log(logfilepath)
 - parse_log(logfilepath,logdir)
 
-Debugging levels
+Log levels
 - Debug: correct session label
 - Info: renamed session label
 - Warning: incorrectly formatted subject label OR insufficient information for full renaming
@@ -87,7 +87,9 @@ def rename_session(session, subject, date):
                 if "Amyloid" in labels or "AV45" in labels:
                     if "lorbetapir" in session.label:
                         scantype = "FlorbetapirPET"
-                        logging.warning(f"{session.label}: Florbetapir scan, double check")
+                        logging.warning(
+                            f"{session.label}: Florbetapir scan, double check"
+                            )
                     else:
                         scantype = "FBBPET"
                     if (
@@ -230,7 +232,7 @@ def main():
         # Real version:
         sessions = project.sessions.iter_find(search_string)
         # for testing:
-        # sessions = project.sessions.iter_find("created>2023-01-01")
+        # sessions = project.sessions.iter_find("created>2022-11-08")
     except flywheel.ApiException:
         logging.exception("Exception occurred")
 
@@ -255,7 +257,7 @@ def main():
                     f"{session.label}:{new_session_label}; insufficient information for scantype and/or study"
                 )
             # Uncomment for real version
-            # session.update({'label': new_session_label})
+            session.update({'label': new_session_label})
 
 
 scantypelist = ["3T", "7T", "PI2620PET", "FBBPET", "AV1451PET", "FDGPET"]
