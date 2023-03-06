@@ -9,27 +9,27 @@ Fuctions:
 - main()
   - check_correct(sessionlabellist, subject, date)
   - rename_session(session, subject, date)
-- email_log(filepath)
-- parse_log(filepath)
+- email_log(logfilepath)
+- parse_log(logfilepath,logdir)
 
 Debugging levels
 - Debug: correct session label
 - Info: renamed session label
 - Warning: incorrectly formatted subject label OR insufficient information for full renaming
 
-detailed logs of each weekly run are saved at {file location tbd...}/log_check_new_session_names_{datetime}.txt
+detailed logs of each weekly run are saved at 
+/project/wolk/Prisma3T/relong/naccsc_fw_session_rename_logs/log_check_new_session_names_{datetime}.txt
 - get list of renamed sessions with: `cat log_check_new_session_names_{datetime}.txt | grep INFO | cut -d ":" -f 3,4`  
 - get list of items needing attention with: `cat log_check_new_session_names_{datetime}.txt | grep WARNING`
 
 log of all session names changed by this script, in the format old name:new name:date changed, are saved at 
-{file location tbd...}/all_fw_session_renames.txt
+/project/wolk/Prisma3T/relong/naccsc_fw_session_rename_logs/all_fw_session_renames.txt
 """
 
 import flywheel
 import logging
 from datetime import datetime, timedelta
 import os
-from pathlib import Path
 
 
 def check_correct(sessionlabellist, subject, date):
@@ -193,22 +193,22 @@ def rename_session(session, subject, date):
     return subject + "x" + date + "x" + scantype + "x" + study
 
 
-def email_log(filepath):
+def email_log(logfilepath):
     # Real version:
-    # os.system(f'mail -s "Flywheel session name change log" emily.mcgrew@pennmedicine.upenn.edu < {filepath}')
+    os.system(f'mail -s "Flywheel session name change log" emily.mcgrew@pennmedicine.upenn.edu < {logfilepath}')
     # for testing:
-    os.system(
-        f'echo "mail -s "Flywheel session name change log" emily.mcgrew@pennmedicine.upenn.edu < {filepath}"'
-    )
+    # os.system(
+        # f'echo "mail -s "Flywheel session name change log" emily.mcgrew@pennmedicine.upenn.edu < {logfilepath}"'
+    # )
 
 
-def parse_log(filepath):
+def parse_log(logfilepath,logdir):
     # Real version:
-    # os.system(f'cat {filepath} | grep INFO | cut -d ":" -f 3,4,6 >> all_fw_session_renames.txt')
+    os.system(f'cat {logfilepath} | grep INFO | cut -d ":" -f 3,4,6 >> {logdir}all_fw_session_renames.txt')
     # for testing:
-    os.system(
-        f'echo cat {filepath} | grep INFO | cut -d ":" -f 3,4,6 >> all_fw_session_renames.txt'
-    )
+    # os.system(
+        # f'echo cat {logfilepath} | grep INFO | cut -d ":" -f 3,4,6 >> {logdir}all_fw_session_renames.txt'
+    # )
 
 
 def main():
@@ -228,9 +228,9 @@ def main():
     # get list of sessions
     try:
         # Real version:
-        # sessions = project.sessions.iter_find(search_string)
+        sessions = project.sessions.iter_find(search_string)
         # for testing:
-        sessions = project.sessions.iter_find("created>2023-01-01")
+        # sessions = project.sessions.iter_find("created>2023-01-01")
     except flywheel.ApiException:
         logging.exception("Exception occurred")
 
@@ -263,12 +263,14 @@ studylist = ["ABC", "ABCD2", "VCID", "LEADS", "YMTL"]
 current_datetime = datetime.now().strftime("%Y-%m-%dT%H_%M_%S")
 current_date = datetime.now().strftime("%Y-%m-%d")
 logfilename = f"log_check_new_session_names_{current_datetime}.txt"
-filepath = Path.cwd() / logfilename
+logdir = "/project/wolk/Prisma3T/relong/naccsc_fw_session_rename_logs/"
+logfilepath = logdir + logfilename
+
 # Real version:
-# logging.basicConfig(filename=logfilename, filemode='w', format='%(levelname)s: %(message)s', level=logging.DEBUG)
+logging.basicConfig(filename=logfilepath, filemode='w', format='%(levelname)s: %(message)s', level=logging.DEBUG)
 # for testing:
-logging.basicConfig(format="%(levelname)s: %(message)s", level=logging.DEBUG)
+# logging.basicConfig(format="%(levelname)s: %(message)s", level=logging.DEBUG)
 
 main()
-email_log(filepath)
-parse_log(filepath)
+email_log(logfilepath)
+parse_log(logfilepath,logdir)
