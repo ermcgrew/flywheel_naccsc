@@ -1,4 +1,4 @@
-#!/usr/bin/python3
+#!/usr/bin/env python3
 
 """
 This script runs weekly via cron job set up by Emily on bscsub cluster. 
@@ -25,7 +25,6 @@ log of all session names changed by this script, in the format old name:new name
 {file location tbd...}/all_fw_session_renames.txt
 """
 
-import fwgearutils
 import flywheel
 import logging
 from datetime import datetime, timedelta
@@ -88,9 +87,7 @@ def rename_session(session, subject, date):
                 if "Amyloid" in labels or "AV45" in labels:
                     if "lorbetapir" in session.label:
                         scantype = "FlorbetapirPET"
-                        logging.warning(
-                            f"{session.label}: Florbetapir scan, double check"
-                        )
+                        logging.warning(f"{session.label}: Florbetapir scan, double check")
                     else:
                         scantype = "FBBPET"
                     if (
@@ -215,7 +212,7 @@ def parse_log(filepath):
 
 
 def main():
-    fw = fwgearutils.getFW("")
+    fw = flywheel.Client()
     if not fw:
         logging.critical("Unable to establish flywheel client")
 
@@ -267,7 +264,6 @@ current_datetime = datetime.now().strftime("%Y-%m-%dT%H_%M_%S")
 current_date = datetime.now().strftime("%Y-%m-%d")
 logfilename = f"log_check_new_session_names_{current_datetime}.txt"
 filepath = Path.cwd() / logfilename
-
 # Real version:
 # logging.basicConfig(filename=logfilename, filemode='w', format='%(levelname)s: %(message)s', level=logging.DEBUG)
 # for testing:
