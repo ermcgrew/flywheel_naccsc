@@ -110,6 +110,13 @@ def rename_session(session, subject, date):
                     ):
                         study = "LEADS"
                         break
+                    elif (
+                        "850160" in datadict["PerformedProcedureStepDescription"]
+                        or "850160" in datadict["ProtocolName"]
+                        or "850679" in datadict["PerformedProcedureStepDescription"]
+                        or "850679" in datadict["ProtocolName"]
+                    ):
+                        study = "MPC"    
                     else:
                         continue
                 elif "2620" in labels:
@@ -139,6 +146,14 @@ def rename_session(session, subject, date):
                     ):
                         study = "LEADS"
                         break
+                    elif (
+                        "850160" in datadict["PerformedProcedureStepDescription"]
+                        or "850160" in datadict["ProtocolName"]
+                        or "850679" in datadict["PerformedProcedureStepDescription"]
+                        or "850679" in datadict["ProtocolName"]
+                    ):
+                        study = "MPC"
+                        break 
                     else:
                         continue
                 elif "FDG" in labels:
@@ -233,7 +248,7 @@ def main():
         # Real version:
         sessions = project.sessions.iter_find(search_string)
         # for testing:
-        # sessions = project.sessions.iter_find("created>2022-11-08")
+        # sessions = project.sessions.iter_find("created>2023-02-08")
     except flywheel.ApiException:
         logging.exception("Exception occurred")
 
