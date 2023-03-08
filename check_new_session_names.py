@@ -184,8 +184,9 @@ def rename_session(session, subject, date):
                         elif session.label[-3:] == "ABC":
                             study = "ABC"
                             break
+                        elif session.label[-3:] == "MPC":
+                            study = "MPC"
                         else:
-                            logging.warning(f"{session.label}; ABC or ABCD2")
                             break
                     else:
                         continue
@@ -261,7 +262,7 @@ def main():
 
 
 scantypelist = ["3T", "7T", "PI2620PET", "FBBPET", "AV1451PET", "FDGPET"]
-studylist = ["ABC", "ABCD2", "VCID", "LEADS", "YMTL"]
+studylist = ["ABC", "ABCD2", "VCID", "LEADS", "YMTL", "MPC"]
 current_datetime = datetime.now().strftime("%Y-%m-%dT%H_%M_%S")
 current_date = datetime.now().strftime("%Y-%m-%d")
 logfilename = f"log_check_new_session_names_{current_datetime}.txt"
