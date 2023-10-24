@@ -208,7 +208,16 @@ def rename_session(session, subject, date):
                 else:
                     continue
 
+    tag_with_study(session, study)
     return subject + "x" + date + "x" + scantype + "x" + study
+
+
+def tag_with_study(session,study):
+    try:
+        session.add_tag(study)
+        logging.debug(f"{session.label}:{study}:Study added as tag to session") 
+    except:
+        logging.warning(f"{session.label}:An error occurred when tagging with study {study}")
 
 
 def email_log(logfilepath):

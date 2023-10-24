@@ -1,0 +1,17 @@
+INFO:ABC:105476x01x20190306x3TxABC:Added study as tag to session
+INFO:ABC:117375x20190312x3TxABC:Added study as tag to session
+INFO:ABC:119482x20190313x3TxABC:Added study as tag to session
+INFO:ABC:123572x20190313x3TxABC:Added study as tag to session
+INFO:ABC:119493x20190320x3TxABC:Added study as tag to session
+DEBUG:114000_20190320_3T_DUPLICATE:Not long enough for study tag
+DEBUG:REVEAL:122152x20170608xFlorbetapirPETxREVEAL:Not a study
+INFO:ABC:124650x20190326x3TxABC:Added study as tag to session
+INFO:ABC:122395x20190326x3TxABC:Added study as tag to session
+INFO:ABC:119621x20190326x3TxABC:Added study as tag to session
+INFO:ABC:123894x20190327x3TxABC:Added study as tag to session
+INFO:ABC:123725x20190327x3TxABC:Added study as tag to session
+INFO:ABC:124613x20190328x3TxABC:Added study as tag to session
+INFO:ABC:124613x20190329x7TxABC:Added study as tag to session
+INFO:ABC:122475x20190402x3TxABC:Added study as tag to session
+INFO:ABC:123434x20190402x3TxABC:Added study as tag to session
+INFO:ABC:123763x20190402x3TxABC:Added study as tag to session
