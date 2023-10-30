@@ -271,6 +271,10 @@ def main():
 
         if check_correct(sessionlabellist, subject, date):
             logging.debug(f"Session label {session.label} is correct")
+            ##Still need to add study tag to session
+            study = sessionlabellist[-1]
+            if study in studylist:
+                tag_with_study(session, study)
             continue
         else:
             new_session_label = rename_session(session, subject, date)
