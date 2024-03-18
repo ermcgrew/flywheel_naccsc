@@ -290,7 +290,7 @@ def main():
 
 
 scantypelist = ["3T", "7T", "PI2620PET", "FBBPET", "AV1451PET", "FDGPET"]
-studylist = ["ABC", "ABCD2", "VCID", "LEADS", "YMTL", "MPC"]
+studylist = ["ABC", "ABCD2", "VCID", "LEADS", "YMTL", "MPC", "ADNI"]
 current_datetime = datetime.now().strftime("%Y-%m-%dT%H_%M_%S")
 current_date = datetime.now().strftime("%Y-%m-%d")
 logfilename = f"log_check_new_session_names_{current_datetime}.txt"
