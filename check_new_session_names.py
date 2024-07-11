@@ -239,7 +239,7 @@ def parse_log(logfilepath,logdir):
 
 
 def main():
-    fw = flywheel.Client()
+    fw = flywheel.Client(request_timeout=600)
     if not fw:
         logging.critical("Unable to establish flywheel client")
 
