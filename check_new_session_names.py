@@ -257,7 +257,7 @@ def main():
         # Real version:
         sessions = project.sessions.iter_find(search_string)
         # for testing:
-        # sessions = project.sessions.iter_find("created>2023-02-08")
+        # sessions = project.sessions.iter_find("created>2025-04-14")
     except flywheel.ApiException:
         logging.exception("Exception occurred")
 
@@ -290,7 +290,7 @@ def main():
 
 
 scantypelist = ["3T", "7T", "PI2620PET", "FBBPET", "AV1451PET", "FDGPET"]
-studylist = ["ABC", "ABCD2", "VCID", "LEADS", "YMTL", "MPC", "ADNI"]
+studylist = ["ABC", "ABCD2", "VCID", "LEADS", "YMTL", "MPC", "ADNI", 'CLARiTI']
 current_datetime = datetime.now().strftime("%Y-%m-%dT%H_%M_%S")
 current_date = datetime.now().strftime("%Y-%m-%d")
 logfilename = f"log_check_new_session_names_{current_datetime}.txt"
