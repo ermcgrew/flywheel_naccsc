@@ -3,19 +3,26 @@
 """
 This script runs weekly via cron job set up by Emily on bscsub cluster. 
 It checks that new flywheel session names have the correct format and fixes them, if enough information is present. 
+Study name tag applied to session.
+If session is 3T, IF_todo tag applied.
+When all sessions reviewed, run create_reader_task gear to make Incidental Finding tasks for all new 3T sessions. 
 Log is emailed to Emily, who manually fixes any sessions with unknown information.
 
 Fuctions:
 - main()
   - check_correct(sessionlabellist, subject, date)
   - rename_session(session, subject, date)
+  - IF_todo_tag(session)
+  - create_IF_todo_tasks(fw,project)
 - email_log(logfilepath)
 - parse_log(logfilepath,logdir)
 
 Log levels
-- Debug: correct session label
+- Debug: correct session label or tag on session
 - Info: renamed session label
 - Warning: incorrectly formatted subject label OR insufficient information for full renaming
+- Error: tag not added or gear not run because of some exception
+- Critical: unable to establish connection to flywheel client
 
 detailed logs of each weekly run are saved at 
 /project/wolk/Prisma3T/relong/naccsc_fw_session_rename_logs/log_check_new_session_names_{datetime}.txt
@@ -213,11 +220,43 @@ def rename_session(session, subject, date):
 
 
 def tag_with_study(session,study):
+    if study in session.tags:
+        logging.debug(f"{session.label}:session already tagged with study {study}.")
+    else:
+        try:
+            session.add_tag(study)
+            logging.debug(f"{session.label}:{study}:Study added as tag to session") 
+        except:
+            logging.error(f"{session.label}:An error occurred when tagging with study {study}")
+
+
+def IF_todo_tag(session):
+    if "IF_todo" in session.tags:
+        logging.debug(f"{session.label}:session already tagged with IF_todo")
+    else:
+        try:
+            session.add_tag("IF_todo")
+            logging.debug(f"{session.label}:IF_todo: IF_todo added as tag to session")
+        except:
+            logging.error(f"{session.label}:An error occurred when tagging with 'IF_todo'")
+
+
+def create_IF_todo_tasks(fw,project):
+    config = {
+        "task_type": "Incidential_findings",
+        "assignee": "emcgrew@upenn.edu",
+        "due_date": "",
+        "container_level": "session",
+        "include_tags": "IF_todo"
+    }
+    inputs={}
+
+    gear = fw.lookup(f'gears/create-guided-reader-task')
     try:
-        session.add_tag(study)
-        logging.debug(f"{session.label}:{study}:Study added as tag to session") 
+        job_id = gear.run(config=config,inputs=inputs,destination=project)
+        logging.debug(f"Create_reader_task gear submitted with job id {job_id}. Check flywheel jobs log for status.")
     except:
-        logging.warning(f"{session.label}:An error occurred when tagging with study {study}")
+        logging.error(f"Create_reader_task gear not run.")
 
 
 def email_log(logfilepath):
@@ -257,7 +296,7 @@ def main():
         # Real version:
         sessions = project.sessions.iter_find(search_string)
         # for testing:
-        # sessions = project.sessions.iter_find("created>2025-04-14")
+        # sessions = project.sessions.iter_find("created>2025-07-28")
     except flywheel.ApiException:
         logging.exception("Exception occurred")
 
@@ -271,11 +310,13 @@ def main():
 
         if check_correct(sessionlabellist, subject, date):
             logging.debug(f"Session label {session.label} is correct")
-            ##Still need to add study tag to session
+            ## add IF_todo tag for 3T sessions
+            if "3T" in sessionlabellist: 
+                IF_todo_tag(session)
+            ## add study tag to session
             study = sessionlabellist[-1]
             if study in studylist:
                 tag_with_study(session, study)
-            continue
         else:
             new_session_label = rename_session(session, subject, date)
             logging.info(
@@ -287,6 +328,12 @@ def main():
                 )
             # Uncomment for real version
             session.update({'label': new_session_label})
+            ## add IF_todo tag for 3T sessions
+            if "3T" in new_session_label: 
+                IF_todo_tag(session)
+
+    ## run create_task_gear to make Incidental findings tasks for all new 3T sessions
+    create_IF_todo_tasks(fw,project)
 
 
 scantypelist = ["3T", "7T", "PI2620PET", "FBBPET", "AV1451PET", "FDGPET"]
