@@ -37,6 +37,7 @@ import flywheel
 import logging
 from datetime import datetime, timedelta
 import os
+from config import log_email,IF_email
 
 
 def check_correct(sessionlabellist, subject, date):
@@ -244,7 +245,7 @@ def IF_todo_tag(session):
 def create_IF_todo_tasks(fw,project):
     config = {
         "task_type": "Incidential_findings",
-        "assignee": "emcgrew@upenn.edu",
+        "assignee": f"{IF_email}",
         "due_date": "",
         "container_level": "session",
         "include_tags": "IF_todo"
@@ -260,21 +261,11 @@ def create_IF_todo_tasks(fw,project):
 
 
 def email_log(logfilepath):
-    # Real version:
-    os.system(f'mail -s "Flywheel session name change log" emily.mcgrew@pennmedicine.upenn.edu < {logfilepath}')
-    # for testing:
-    # os.system(
-        # f'echo "mail -s "Flywheel session name change log" emily.mcgrew@pennmedicine.upenn.edu < {logfilepath}"'
-    # )
+    os.system(f'mail -s "Flywheel session name change log" {log_email} < {logfilepath}')
 
 
 def parse_log(logfilepath,logdir):
-    # Real version:
     os.system(f'cat {logfilepath} | grep INFO | cut -d ":" -f 3,4,6 >> {logdir}all_fw_session_renames.txt')
-    # for testing:
-    # os.system(
-        # f'echo cat {logfilepath} | grep INFO | cut -d ":" -f 3,4,6 >> {logdir}all_fw_session_renames.txt'
-    # )
 
 
 def main():
@@ -293,10 +284,7 @@ def main():
 
     # get list of sessions
     try:
-        # Real version:
         sessions = project.sessions.iter_find(search_string)
-        # for testing:
-        # sessions = project.sessions.iter_find("created>2025-07-28")
     except flywheel.ApiException:
         logging.exception("Exception occurred")
 
@@ -344,10 +332,7 @@ logfilename = f"log_check_new_session_names_{current_datetime}.txt"
 logdir = "/project/wolk/Prisma3T/relong/naccsc_fw_session_rename_logs/"
 logfilepath = logdir + logfilename
 
-# Real version:
 logging.basicConfig(filename=logfilepath, filemode='w', format='%(levelname)s: %(message)s', level=logging.DEBUG)
-# for testing:
-# logging.basicConfig(format="%(levelname)s: %(message)s", level=logging.DEBUG)
 
 main()
 email_log(logfilepath)
