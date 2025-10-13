@@ -299,8 +299,8 @@ def main():
         if check_correct(sessionlabellist, subject, date):
             logging.debug(f"Session label {session.label} is correct")
             ## add IF_todo tag for 3T sessions
-            if "3T" in sessionlabellist: 
-                IF_todo_tag(session)
+            # if "3T" in sessionlabellist: 
+            #     IF_todo_tag(session)
             ## add study tag to session
             study = sessionlabellist[-1]
             if study in studylist:
@@ -317,11 +317,11 @@ def main():
             # Uncomment for real version
             session.update({'label': new_session_label})
             ## add IF_todo tag for 3T sessions
-            if "3T" in new_session_label: 
-                IF_todo_tag(session)
+            # if "3T" in new_session_label: 
+            #     IF_todo_tag(session)
 
     ## run create_task_gear to make Incidental findings tasks for all new 3T sessions
-    create_IF_todo_tasks(fw,project)
+    # create_IF_todo_tasks(fw,project)
 
 
 scantypelist = ["3T", "7T", "PI2620PET", "FBBPET", "AV1451PET", "FDGPET"]
